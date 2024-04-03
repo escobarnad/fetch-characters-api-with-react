@@ -30,11 +30,17 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const responseFromAPI = await fetch(
-      `https://ih-crud-api.herokuapp.com/characters`
-    )
+      `https://ih-crud-api.herokuapp.com/characters` ,
+     {
+      method: "POST",
+      body: JSON.stringify(req.body),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
     if (responseFromAPI.ok) {
       const characterFromAPI = await responseFromAPI.json()
-      res.json({ character: characterFromAPI })
+      res.status(201).json(characterFromAPI)
     }
   } catch (error) {
     console.error(error)
@@ -44,11 +50,17 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const responseFromAPI = await fetch(
-      `https://ih-crud-api.herokuapp.com/characters/${req.params.id}`
+      `https://ih-crud-api.herokuapp.com/characters/${req.params.id}`,
+      {
+       method: "PUT",
+       body: JSON.stringify(req.body),
+       headers: {
+         "Content-Type": "application/json"
+       }}
     )
     if (responseFromAPI.ok) {
       const characterFromAPI = await responseFromAPI.json()
-      res.json({ character: characterFromAPI })
+      res.json(characterFromAPI)
     }
   } catch (error) {
     console.error(error)
@@ -57,15 +69,15 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   try {
-    const responseFromAPI = await fetch(
-      `https://ih-crud-api.herokuapp.com/characters/${req.params.id}`
+    await fetch(
+      `https://ih-crud-api.herokuapp.com/characters/${req.params.id}`, {
+        method: "DELETE"
+      }
     )
-    if (responseFromAPI.ok) {
-      const characterFromAPI = await responseFromAPI.json()
-      res.json({ character: characterFromAPI })
-    }
+    res.status(204).send()
   } catch (error) {
     console.error(error)
+    res.status(500).json({error})
   }
 })
 
