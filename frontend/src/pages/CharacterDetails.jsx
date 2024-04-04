@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 const CharacterDetails = () => {
+  const navigate = useNavigate();
   const { characterId } = useParams();
 
   const [character, setCharacter] = useState();
@@ -21,6 +22,22 @@ const CharacterDetails = () => {
     }
   };
 
+  const deleteCharacter = async (charId) => {
+    try {
+      const responseFromBackend = await fetch(
+        `${import.meta.env.VITE_API_URL}/characters/${charId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (responseFromBackend.status === 204) {
+        navigate(`/characters`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     fetchCharacter();
   }, []);
@@ -34,7 +51,9 @@ const CharacterDetails = () => {
         <button type="button">Update</button>
       </Link>
       <Link>
-        <button type="button">Delete</button>
+        <button type="button" onClick={() => deleteCharacter(character.id)}>
+          Delete
+        </button>
       </Link>
     </>
   ) : (
